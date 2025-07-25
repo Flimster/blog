@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>{% block title %}MyBlog{% endblock title %}</title>
+        <link rel="stylesheet" href="{{ get_url(path="main.css") }}" />
+    </head>
+
+    <body>
+        <nav class="navbar">
+            <div class="container">
+                <div class="navbar-brand">
+                    <a href="{{ get_url(path="") }}" class="navbar-item">MyBlog</a>
+                </div>
+                <div class="navbar-menu">
+                    <div class="navbar-start">
+                        <a href="{{ get_url(path="blog") }}" class="navbar-item">Weekly Updates</a>
+                        <a href="{{ get_url(path="photos") }}" class="navbar-item">Daily Photos</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        
+        <section class="section">
+            <div class="container">
+                {% block content %} {% endblock content %}
+            </div>
+        </section>
+    </body>
+</html>

@@ -1,0 +1,162 @@
+{% extends "base.html" %} {% block title %}{{ page.title }} - MyBlog{% endblock
+title %} {% block content %}
+<h1 class="title">{{ page.title }}</h1>
+{% if page.content %}
+<p class="section-description">{{ page.content | safe }}</p>
+{% endif %}
+
+<div class="photo-controls">
+    <button id="load-more" class="load-more-btn">Load Photos</button>
+    <div class="photo-count">
+        <span id="loaded-count">0</span> photos loaded
+    </div>
+</div>
+
+<div class="photo-masonry-grid" id="photo-grid">
+    <!-- Photos will be loaded here dynamically -->
+</div>
+
+<div class="loading-indicator" id="loading">
+    <div class="spinner"></div>
+    <p>Loading photos...</p>
+</div>
+
+<script>
+    class PhotoGallery {
+        constructor() {
+            this.photos = [];
+            this.loadedCount = 0;
+            this.photosPerPage = 12;
+            this.grid = document.getElementById("photo-grid");
+            this.loadingEl = document.getElementById("loading");
+            this.loadMoreBtn = document.getElementById("load-more");
+            this.countEl = document.getElementById("loaded-count");
+
+            this.init();
+        }
+
+        async init() {
+            await this.loadPhotoData();
+            this.setupEventListeners();
+            this.loadMorePhotos(); // Load first batch
+        }
+
+        async loadPhotoData() {
+            try {
+                const response = await fetch(
+                    '{{ get_url(path="photos.json") }}',
+                );
+                const data = await response.json();
+                this.photos = data.photos.sort(
+                    (a, b) => new Date(b.date) - new Date(a.date),
+                );
+            } catch (error) {
+                console.error("Error loading photo data:", error);
+            }
+        }
+
+        setupEventListeners() {
+            this.loadMoreBtn.addEventListener("click", () =>
+                this.loadMorePhotos(),
+            );
+
+            // Infinite scroll
+            window.addEventListener("scroll", () => {
+                if (
+                    window.innerHeight + window.scrollY >=
+                    document.body.offsetHeight - 1000
+                ) {
+                    if (this.loadedCount < this.photos.length) {
+                        this.loadMorePhotos();
+                    }
+                }
+            });
+        }
+
+        loadMorePhotos() {
+            if (this.loadedCount >= this.photos.length) {
+                this.loadMoreBtn.textContent = "All photos loaded";
+                this.loadMoreBtn.disabled = true;
+                return;
+            }
+
+            this.showLoading();
+
+            // Simulate loading delay
+            setTimeout(() => {
+                const startIndex = this.loadedCount;
+                const endIndex = Math.min(
+                    startIndex + this.photosPerPage,
+                    this.photos.length,
+                );
+                const photosToLoad = this.photos.slice(startIndex, endIndex);
+
+                photosToLoad.forEach((photo) => this.createPhotoTile(photo));
+
+                this.loadedCount = endIndex;
+                this.updateUI();
+                this.hideLoading();
+            }, 500);
+        }
+
+        createPhotoTile(photo) {
+            const tile = document.createElement("div");
+            tile.className = "photo-tile";
+            tile.dataset.date = photo.date;
+
+            tile.innerHTML = `
+            <div class="photo-container">
+                <img src="{{ get_url(path="") }}/${photo.image}"
+                     alt="${photo.title}"
+                     loading="lazy"
+                     onerror="this.src='{{ get_url(path="") }}placeholder.jpg'" />
+                <div class="photo-overlay">
+                    <div class="photo-info">
+                        <h3>${photo.title}</h3>
+                        <p class="date">${this.formatDate(photo.date)}</p>
+                        ${photo.description ? `<p class="description">${photo.description}</p>` : ""}
+                    </div>
+                </div>
+            </div>
+        `;
+
+            this.grid.appendChild(tile);
+        }
+
+        formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+            });
+        }
+
+        updateUI() {
+            this.countEl.textContent = this.loadedCount;
+
+            if (this.loadedCount >= this.photos.length) {
+                this.loadMoreBtn.textContent = `All ${this.photos.length} photos loaded`;
+                this.loadMoreBtn.disabled = true;
+            } else {
+                this.loadMoreBtn.textContent = `Load More (${this.photos.length - this.loadedCount} remaining)`;
+            }
+        }
+
+        showLoading() {
+            this.loadingEl.style.display = "block";
+            this.loadMoreBtn.disabled = true;
+        }
+
+        hideLoading() {
+            this.loadingEl.style.display = "none";
+            this.loadMoreBtn.disabled = false;
+        }
+    }
+
+    // Initialize when DOM is loaded
+    document.addEventListener("DOMContentLoaded", () => {
+        new PhotoGallery();
+    });
+</script>
+{% endblock content %}

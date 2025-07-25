@@ -1,0 +1,34 @@
+# The URL the site will be built for
+base_url = "https://mywebsite.com"
+
+# Site metadata
+title = "My Learning Journey"
+description = "Weekly updates on what I'm learning and daily photography"
+
+# Whether to automatically compile all Sass files in the sass directory
+compile_sass = true
+
+# Whether to build a search index to be used later on by a JavaScript library
+build_search_index = false
+
+# Generate feeds for blog posts
+generate_feeds = true
+feed_filenames = ["atom.xml"]
+
+# Markdown configuration
+[markdown]
+# Whether to do syntax highlighting
+highlight_code = true
+highlight_theme = "base16-ocean-dark"
+
+# Smart punctuation for better typography
+smart_punctuation = true
+
+# External links configuration
+external_links_target_blank = true
+external_links_no_follow = false
+
+[extra]
+# Put all your custom variables here
+author = "Your Name"
+github = "https://github.com/yourusername"

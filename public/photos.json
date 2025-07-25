@@ -1,0 +1,16 @@
+{
+  "photos": [
+    {
+      "title": "Donuts with Alice and Lisa",
+      "date": "2025-07-09",
+      "image": "photos/IMG_3933.png",
+      "description": "Nice cheap donuts"
+    },
+    {
+      "title": "Thé Hidden",
+      "date": "2025-07-03",
+      "image": "photos/IMG_3886.png",
+      "description": "Thé Hidden with Lisa, amazing coffee!"
+    }
+  ]
+}

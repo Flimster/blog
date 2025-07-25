@@ -1,0 +1,19 @@
+{% extends "base.html" %} 
+
+{% block content %}
+<div class="hero">
+    <h1 class="title">Welcome to My Blog</h1>
+    <p class="hero-description">A space for weekly learning updates and daily photography</p>
+    
+    <div class="hero-links">
+        <a href="{{ get_url(path='blog') }}" class="hero-link">
+            <h3>📝 Weekly Updates</h3>
+            <p>My learning journey and weekly status updates</p>
+        </a>
+        <a href="{{ get_url(path='photos') }}" class="hero-link">
+            <h3>📸 Daily Photos</h3>
+            <p>One meaningful shot from each day</p>
+        </a>
+    </div>
+</div>
+{% endblock content %}

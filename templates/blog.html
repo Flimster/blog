@@ -1,0 +1,22 @@
+{% extends "base.html" %} 
+
+{% block title %}{{ section.title }} - MyBlog{% endblock title %}
+
+{% block content %}
+<h1 class="title">{{ section.title }}</h1>
+{% if section.content %}
+<p class="section-description">{{ section.content | safe }}</p>
+{% endif %}
+
+<div class="blog-list">
+    {% for page in section.pages %}
+    <article class="blog-item">
+        <h3><a href="{{ page.permalink | safe }}">{{ page.title }}</a></h3>
+        <p class="date">{{ page.date | date(format="%B %d, %Y") }}</p>
+        {% if page.summary %}
+        <p class="excerpt">{{ page.summary }}</p>
+        {% endif %}
+    </article>
+    {% endfor %}
+</div>
+{% endblock content %}
